@@ -1,0 +1,2 @@
+# Store text files with LF in the repo; Git converts to the platform default on checkout.
+* text=auto
