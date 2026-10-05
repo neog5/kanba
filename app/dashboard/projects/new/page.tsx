@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { isPro } from '@/lib/plan';
 import { useRouter, useParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -78,7 +79,7 @@ export default function NewProjectPage() {
 
   const canCreateProject = () => {
     if (!profile) return false;
-    return profile.subscription_status === 'pro' || projectCount < 1;
+    return isPro(profile.subscription_status) || projectCount < 1;
   };
 
   // Generate slug from project name
@@ -338,4 +339,4 @@ export default function NewProjectPage() {
       </div>
     </>
   );
-}
+}

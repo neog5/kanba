@@ -74,6 +74,7 @@ import {
 import { Home } from "lucide-react"
 import { useUser } from '@/components/user-provider'
 import { useEffect, useState } from "react";
+import { SELF_HOSTED, isPro } from '@/lib/plan';
 
 interface Project {
   id: string;
@@ -100,7 +101,7 @@ const menuItems = [
   { title: "Meetings (soon)", url: "/dashboard/integrations", icon: Calendar, disabled: true },
   { title: "Settings", url: "/dashboard/settings", icon: SettingsIcon },
   { title: "Billing", url: "/dashboard/billing", icon: CreditCardIcon },
-]
+].filter((item) => !(SELF_HOSTED && item.title === "Billing"))
 
 export function AppSidebar({ onSignOut, onProjectUpdate }: AppSidebarProps) {
   const { user } = useUser();
@@ -239,10 +240,10 @@ export function AppSidebar({ onSignOut, onProjectUpdate }: AppSidebarProps) {
             <SidebarMenu>
               {menuItems.map((item) => {
                 if (item.title === "Bookmarks") {
-                  const isPro = userData.subscription === 'pro';
+                  const hasPro = isPro(userData.subscription);
                   return (
                     <SidebarMenuItem key={item.title}>
-                      {isPro ? (
+                      {hasPro ? (
                         <SidebarMenuButton
                           asChild
                           isActive={pathname?.startsWith("/dashboard/bookmarks") || false}
@@ -372,11 +373,13 @@ export function AppSidebar({ onSignOut, onProjectUpdate }: AppSidebarProps) {
               {theme === 'dark' ? <Sun className="h-4 w-4 mr-2" /> : <Moon className="h-4 w-4 mr-2" />}
               Toggle Theme
                 </DropdownMenuItem>
+            {!SELF_HOSTED && (
             <DropdownMenuItem asChild>
               <Link href="/dashboard/billing">
                 <CreditCardIcon className="h-4 w-4 mr-2" /> Billing
               </Link>
                 </DropdownMenuItem>
+            )}
               <DropdownMenuSeparator />
             <DropdownMenuItem onClick={handleSignOut} className="text-red-600">
               <LogOutIcon className="h-4 w-4 mr-2" /> Log out
@@ -386,4 +389,4 @@ export function AppSidebar({ onSignOut, onProjectUpdate }: AppSidebarProps) {
       </SidebarFooter>
     </Sidebar>
   )
-} 
+} 
