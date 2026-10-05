@@ -5,6 +5,7 @@
 
 
 import React, { useState, useEffect } from 'react';
+import { SELF_HOSTED, isPro } from '@/lib/plan';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -155,7 +156,7 @@ export default function DashboardPage() {
   const canCreateProject = () => {
     if (!profile) return false;
     const ownedProjects = projects.filter(p => p.user_id === user?.id);
-    return profile.subscription_status === 'pro' || ownedProjects.length < 1;
+    return isPro(profile.subscription_status) || ownedProjects.length < 1;
   };
 
   const getProjectRole = (project: Project) => {
@@ -196,6 +197,7 @@ export default function DashboardPage() {
           
         </div>
         <div className="flex items-center space-x-4">
+          {!SELF_HOSTED && (<>
           <Badge variant={profile?.subscription_status === 'pro' ? 'default' : 'secondary'}>
             {profile?.subscription_status === 'pro' ? (
               <><Crown className="h-3 w-3 mr-1" /> Pro</>
@@ -208,10 +210,11 @@ export default function DashboardPage() {
               <Link href="/dashboard/billing">Upgrade to Pro</Link>
             </Button>
           )}
+          </>)}
         </div>
       </div>
       {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+      <div className={`grid grid-cols-1 ${SELF_HOSTED ? 'md:grid-cols-3' : 'md:grid-cols-4'} gap-6 mb-8`}>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between  ">
             <CardTitle className="text-sm font-medium">Total Projects</CardTitle>
@@ -235,6 +238,7 @@ export default function DashboardPage() {
           </CardHeader>
         </Card>
         
+        {!SELF_HOSTED && (
         <Card>
           <CardHeader className="flex flex-row items-center justify-between ">
             <CardTitle className="text-sm font-medium">Subscription</CardTitle>
@@ -243,6 +247,7 @@ export default function DashboardPage() {
             </div>            
           </CardHeader>
         </Card>
+        )}
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Projects */}
@@ -397,12 +402,14 @@ export default function DashboardPage() {
                   Create New Project
                 </Link>
               </Button>
+              {!SELF_HOSTED && (
               <Button variant="outline" className="w-full justify-start" asChild>
                 <Link href="/dashboard/billing">
                   <Crown className="h-4 w-4 mr-2" />
                   Manage Subscription
                 </Link>
               </Button>
+              )}
             </CardContent>
           </Card>
         </div>

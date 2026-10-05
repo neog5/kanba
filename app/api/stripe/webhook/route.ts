@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { SELF_HOSTED } from '@/lib/plan';
 import { stripe } from '@/lib/stripe';
 import { createClient } from '@supabase/supabase-js';
 import Stripe from 'stripe';
@@ -10,6 +11,9 @@ const supabaseAdmin = createClient(
 );
 
 export async function POST(request: NextRequest) {
+  if (SELF_HOSTED) {
+    return NextResponse.json({ error: 'Billing is disabled' }, { status: 404 });
+  }
   try {
     const body = await request.text();
     const signature = request.headers.get('stripe-signature');

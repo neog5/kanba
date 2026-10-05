@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { SELF_HOSTED } from '@/lib/plan';
 import { stripe } from '@/lib/stripe';
 import { createClient } from '@supabase/supabase-js';
 
@@ -9,6 +10,9 @@ const supabaseAdmin = createClient(
 );
 
 export async function POST(request: NextRequest) {
+  if (SELF_HOSTED) {
+    return NextResponse.json({ error: 'Billing is disabled' }, { status: 404 });
+  }
   try {
     const { price_id, success_url, cancel_url, mode } = await request.json();
 

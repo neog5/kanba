@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { SELF_HOSTED } from '@/lib/plan';
 import Link from 'next/link';
 import { useTheme } from 'next-themes';
 import { Button } from '@/components/ui/button';
@@ -135,12 +136,14 @@ export function Navbar({ user, onSignOut, loading = false }: NavbarProps) {
                         Dashboard
                       </Link>
                     </DropdownMenuItem>
+                    {!SELF_HOSTED && (
                     <DropdownMenuItem asChild>
                       <Link href="/dashboard/billing">
                         <CreditCard className="mr-2 h-4 w-4" />
                         Billing
                       </Link>
                     </DropdownMenuItem>
+                    )}
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={onSignOut}>
                       <LogOut className="mr-2 h-4 w-4" />
