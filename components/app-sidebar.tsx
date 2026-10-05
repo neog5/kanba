@@ -389,4 +389,4 @@ export function AppSidebar({ onSignOut, onProjectUpdate }: AppSidebarProps) {
       </SidebarFooter>
     </Sidebar>
   )
-} 
+} 

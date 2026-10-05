@@ -165,4 +165,4 @@ export function Navbar({ user, onSignOut, loading = false }: NavbarProps) {
       </nav>
     </div>
   );
-}
+}
